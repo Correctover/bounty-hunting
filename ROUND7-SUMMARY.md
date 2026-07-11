@@ -46,3 +46,14 @@ Key insight: Google ADK vulnerability was not "unsafe pickle usage" but "fixed i
 - MLOps frameworks: MLflow, BentoML, Ray
 - Protection consistency scans on clean targets
 - MCP spec compliance scanning (July 28 deadline)
+
+## Update: BentoML RCE Discovered (12:28)
+
+### 4. BentoML Runner Server Pickle RCE (CVSS 9.8) — NEW
+- **File:** `src/bentoml/_internal/server/runner_app.py:301`
+- **Code:** `pickle.loads(r_)` where `r_ = await request.body()` (HTTP request body)
+- **Trigger:** HTTP header `args-number: 2` → else branch → pickle.loads on body
+- **Auth:** None
+- **Proof:** `uid=0(root)` confirmed
+- **Additional locations:** container.py:312/416, remote.py:263, serde.py:274/284
+- **Status:** Advisory ready, pending submission
